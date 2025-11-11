@@ -219,50 +219,64 @@ const EuzinhoChat: React.FC = () => {
   const lastMessage = messages.length > 0 ? messages[messages.length-1] : null;
 
   return (
-    <div className="relative w-full h-full flex flex-col items-center justify-center text-center p-4">
+    <div className="relative w-full h-full flex flex-col items-center justify-center text-center px-6 pb-16">
       {/* Header */}
-      <header className="absolute top-8 text-center">
-        <h1 className="text-4xl font-bold text-white">Euzinho</h1>
-        <p className="text-lg text-blue-200">Seu reflexo mais bonito.</p>
+      <header className="absolute top-10 flex flex-col items-center gap-2 text-center">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-wide text-white drop-shadow-lg uppercase">Euzinho</h1>
+        <p className="text-lg md:text-xl text-blue-200/90">Seu reflexo mais bonito.</p>
       </header>
-      
-      {/* Message Bubbles */}
+
+      {/* Message Bubble */}
       {lastMessage && (
-        <div className="absolute top-1/4 transition-opacity duration-500 ease-in-out">
-            <div className={`p-4 rounded-2xl max-w-sm md:max-w-md mx-auto whitespace-pre-wrap break-words text-white ${lastMessage.role === Role.User ? 'bg-blue-600/80' : 'bg-blue-900/80'}`}>
-                {lastMessage.content}
-            </div>
+        <div className="absolute top-1/4 w-full flex justify-center px-6 transition-opacity duration-500 ease-in-out">
+          <div
+            className={`backdrop-blur-xl border border-blue-300/30 shadow-2xl p-5 rounded-3xl max-w-md md:max-w-lg text-base md:text-lg leading-relaxed text-left text-white whitespace-pre-wrap break-words ${lastMessage.role === Role.User ? 'bg-blue-500/40' : 'bg-blue-900/60'}`}
+          >
+            {lastMessage.content}
+          </div>
         </div>
       )}
 
       {/* Main Interactive Area */}
-      <div className="relative flex items-center justify-center w-64 h-64 md:w-80 md:h-80">
-          <img src={EUZINHO_IMAGE_BASE64} alt="Euzinho" className="w-full h-full object-contain breathing-avatar" />
+      <div className="flex flex-col items-center gap-10 mt-16 md:mt-24">
+        <div className="relative flex items-center justify-center">
+          <img
+            src={EUZINHO_IMAGE_BASE64}
+            alt="Euzinho"
+            className="w-[260px] sm:w-[320px] md:w-[420px] lg:w-[480px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(25,60,120,0.45)] breathing-avatar"
+          />
 
-          <div
-            className={`absolute w-16 h-16 md:w-20 md:h-20 cursor-pointer transition-all duration-300 ${interactionState === 'listening' ? 'listening-pulse' : 'heart-pulse'}`}
-            style={{ top: '48%', left: '50%', transform: 'translate(-50%, -50%)' }}
+          <button
+            type="button"
+            className={`absolute flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-b from-[#fff6b3] via-[#ffe066] to-[#f5b301] text-white shadow-[0_0_30px_rgba(255,220,120,0.65)] border border-white/40 transition-transform duration-300 focus:outline-none focus:ring-4 focus:ring-yellow-200/70 ${interactionState === 'listening' ? 'listening-pulse scale-105' : 'heart-pulse'}`}
+            style={{ top: '46%', left: '50%', transform: 'translate(-50%, -50%)' }}
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
-            role="button"
-            aria-label="Converse com Euzinho"
+            aria-label="Converse com Euzinho tocando no coração"
+            onKeyDown={(event) => {
+              if ((event.key === 'Enter' || event.key === ' ') && interactionState === 'idle') {
+                event.preventDefault();
+                handleSingleTap();
+              }
+            }}
           >
-            <svg viewBox="0 0 24 24" fill="url(#heartGradient)" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 24 24" className="w-10 h-10 sm:w-12 sm:h-12" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <radialGradient id="heartGradient">
-                  <stop offset="0%" stopColor="#FFF7A8" />
-                  <stop offset="100%" stopColor="#F0D24C" />
+                <radialGradient id="heartGradient" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#fff9d6" />
+                  <stop offset="100%" stopColor="#f2b705" />
                 </radialGradient>
               </defs>
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              <path fill="url(#heartGradient)" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
             </svg>
-          </div>
+          </button>
+        </div>
+
+        {/* Status Text */}
+        <p className="text-blue-200/90 text-lg md:text-xl max-w-md">
+          {statusText}
+        </p>
       </div>
-      
-      {/* Status Text */}
-      <p className="absolute bottom-12 text-blue-200 text-lg transition-opacity duration-300">
-        {statusText}
-      </p>
 
       {/* Text Input Modal */}
       {modalOpen && (
