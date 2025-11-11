@@ -1,0 +1,7 @@
+{
+  "name": "Euzinho - AI Emotional Companion",
+  "description": "An empathetic AI companion named Euzinho, designed to provide emotional support, encourage self-care, and promote self-love through calm and reassuring conversations.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
